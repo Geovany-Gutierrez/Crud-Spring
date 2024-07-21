@@ -9,7 +9,6 @@ Este é um projeto completo para a gestão de pessoas, utilizando tecnologias mo
 - **Backend**: Spring Boot
 - **Frontend**: React
 - **Banco de Dados**: MySQL
-- **Documentação da API**: Swagger
 - **Ferramenta de Construção**: Maven
 
 ## Funcionalidades
@@ -117,3 +116,5 @@ A aplicação frontend em React oferece uma interface para:
     ```
 
 4. A interface estará disponível em `http://localhost:3000`.
+
+# Infelizmente não poderei melhorar este projeto em estado deplorável.
