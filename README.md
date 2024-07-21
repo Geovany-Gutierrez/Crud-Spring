@@ -120,9 +120,3 @@ A aplicação frontend em React oferece uma interface para:
     ```
 
 4. A interface estará disponível em `http://localhost:3000`.
-
-## Documentação da API
-
-A documentação da API pode ser acessada em:
-
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
