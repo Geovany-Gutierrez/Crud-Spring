@@ -47,9 +47,6 @@ A aplicação frontend em React oferece uma interface para:
 
     - **`gestao-pessoas-backend`**: Contém o código fonte do backend (API REST).
     - **`gestao-pessoas-frontend`**: Contém o código fonte do frontend (aplicação React).
-    - **`.vscode`**: Configurações do Visual Studio Code.
-    - **`settings.json`**: Configurações do projeto.
-    - **`.gitattributes`** e **`.gitignore`**: Arquivos de configuração do Git.
     - **`README.md`**: Documentação do projeto.
 
 3. **Configuração do Backend**:
