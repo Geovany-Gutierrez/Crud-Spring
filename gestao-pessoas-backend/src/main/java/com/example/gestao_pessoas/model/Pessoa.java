@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 
 @Entity
@@ -16,11 +17,14 @@ public class Pessoa {
     private Long id;
 
     @NotEmpty(message = "Nome não pode estar vazio")
+    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Nome deve conter apenas letras e espaços")
     private String nome;
 
-    @Pattern(regexp = "\\d{11}", message = "CPF deve conter 11 dígitos")
+    @NotEmpty(message = "CPF é obrigatório")
+    @Pattern(regexp = "^\\d{11}$", message = "CPF deve conter apenas 11 dígitos")
     private String cpf;
 
+    @PastOrPresent(message = "Data de nascimento não pode ser maior que a data atual")
     private LocalDate dataNascimento;
 
     @Email(message = "Email inválido")
@@ -48,7 +52,8 @@ public class Pessoa {
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        // Remove formatação
+        this.cpf = cpf != null ? cpf.replaceAll("\\D", "") : null;
     }
 
     public LocalDate getDataNascimento() {
