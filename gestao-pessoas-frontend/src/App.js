@@ -59,13 +59,13 @@ function App() {
                     cpf: formData.cpf.replace(/\D/g, '')
                 });
             }
-            await fetchPessoas(); // Atualiza a lista de pessoas
-            handleCloseForm(); // Fecha o modal
+            await fetchPessoas();
+            handleCloseForm();
         } catch (error) {
             console.error('Error submitting form', error);
         }
     };
-    
+
     return (
         <div className="container mt-5">
             <h1>Gestão de Pessoas</h1>

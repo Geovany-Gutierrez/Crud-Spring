@@ -43,8 +43,16 @@ public class PessoaService {
         String formattedCpf = formatCpf(pessoa.getCpf());
         pessoa.setCpf(formattedCpf);
         validatePessoa(pessoa);
+    
+        // Verificar se o CPF já existe para outra pessoa
+        Optional<Pessoa> existingPessoa = pessoaRepository.findByCpf(formattedCpf);
+        if (existingPessoa.isPresent() && !existingPessoa.get().getId().equals(id)) {
+            throw new CpfJaExisteException("Já existe alguém com este CPF");
+        }
+    
         return pessoaRepository.save(pessoa);
     }
+    
 
     public void deletePessoa(Long id) {
         pessoaRepository.deleteById(id);
@@ -63,6 +71,6 @@ public class PessoaService {
 
     private boolean isValidCpf(String cpf) {
         // Implementar a lógica de validação de CPF aqui
-        return cpf.length() == 11; // Placeholder para validação básica
+        return cpf.length() == 11; 
     }
 }

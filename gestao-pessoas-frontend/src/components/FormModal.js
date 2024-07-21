@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const FormModal = ({ showModal, onClose, initialData, onSubmit, title }) => {
     const [formData, setFormData] = useState({
@@ -27,7 +28,10 @@ const FormModal = ({ showModal, onClose, initialData, onSubmit, title }) => {
         else if (!/^[A-Za-z\s]+$/.test(formData.nome)) newErrors.nome = 'Nome deve conter apenas letras e espaços';
 
         if (!formData.cpf) newErrors.cpf = 'CPF é obrigatório';
-        else if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(formatCPF(formData.cpf))) newErrors.cpf = 'CPF inválido';
+        else {
+            const formattedCPF = formatCPF(formData.cpf);
+            if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(formattedCPF)) newErrors.cpf = 'CPF inválido';
+        }
 
         if (!formData.dataNascimento) newErrors.dataNascimento = 'Data de nascimento é obrigatória';
         else if (formData.dataNascimento > today) newErrors.dataNascimento = 'Data de nascimento não pode ser maior que a data atual';
@@ -47,10 +51,7 @@ const FormModal = ({ showModal, onClose, initialData, onSubmit, title }) => {
         }
 
         try {
-            await onSubmit({
-                ...formData,
-                cpf: formData.cpf.replace(/\D/g, '') // Remove formatação para enviar
-            });
+            await onSubmit(formData);
             setFormData({
                 nome: '',
                 cpf: '',
@@ -59,7 +60,7 @@ const FormModal = ({ showModal, onClose, initialData, onSubmit, title }) => {
             });
             setErrors({});
             setApiError('');
-            onClose(); // Fecha o modal após salvar
+            onClose();
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 setApiError(error.response.data);

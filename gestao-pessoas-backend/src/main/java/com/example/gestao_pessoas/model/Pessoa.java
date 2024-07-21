@@ -1,5 +1,6 @@
 package com.example.gestao_pessoas.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,21 +13,26 @@ import java.time.LocalDate;
 
 @Entity
 public class Pessoa {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 100)
     @NotEmpty(message = "Nome não pode estar vazio")
     @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Nome deve conter apenas letras e espaços")
     private String nome;
 
+    @Column(nullable = false, unique = true, length = 11)
     @NotEmpty(message = "CPF é obrigatório")
     @Pattern(regexp = "^\\d{11}$", message = "CPF deve conter apenas 11 dígitos")
     private String cpf;
 
+    @Column(name = "data_nascimento", nullable = false)
     @PastOrPresent(message = "Data de nascimento não pode ser maior que a data atual")
     private LocalDate dataNascimento;
 
+    @Column(nullable = false, length = 100)
     @Email(message = "Email inválido")
     private String email;
 
@@ -52,7 +58,6 @@ public class Pessoa {
     }
 
     public void setCpf(String cpf) {
-        // Remove formatação
         this.cpf = cpf != null ? cpf.replaceAll("\\D", "") : null;
     }
 
