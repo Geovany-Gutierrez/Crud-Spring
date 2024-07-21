@@ -9,7 +9,6 @@ const FormModal = ({ showModal, onClose, initialData, onSubmit, title }) => {
         email: ''
     });
     const [errors, setErrors] = useState({});
-    const [apiError, setApiError] = useState('');
 
     useEffect(() => {
         if (initialData) {
@@ -59,15 +58,9 @@ const FormModal = ({ showModal, onClose, initialData, onSubmit, title }) => {
                 email: ''
             });
             setErrors({});
-            setApiError('');
             onClose();
         } catch (error) {
-            if (error.response && error.response.status === 400) {
-                setApiError(error.response.data);
-            } else {
-                console.error('Erro desconhecido:', error);
-                setApiError('Ocorreu um erro inesperado.');
-            }
+            console.error('Erro desconhecido:', error);
         }
     };
 
@@ -85,7 +78,6 @@ const FormModal = ({ showModal, onClose, initialData, onSubmit, title }) => {
                     </div>
                     <form onSubmit={handleSubmit}>
                         <div className="modal-body">
-                            {apiError && <div className="alert alert-danger">{apiError}</div>}
 
                             <div className="form-group">
                                 <label>Nome</label>

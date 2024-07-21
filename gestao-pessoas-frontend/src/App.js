@@ -12,10 +12,6 @@ function App() {
     const [formType, setFormType] = useState('create');
     const [currentPessoa, setCurrentPessoa] = useState(null);
 
-    useEffect(() => {
-        fetchPessoas();
-    }, []);
-
     const fetchPessoas = async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/pessoas');
@@ -25,6 +21,10 @@ function App() {
         }
     };
 
+    useEffect(() => {
+        fetchPessoas();
+    }, []);
+    
     const handleOpenDetails = (pessoa) => {
         setSelectedPessoa(pessoa);
         setShowDetails(true);
