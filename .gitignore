@@ -1,24 +1,11 @@
 # Diretórios do Node.js
 node_modules/
-public/
 
 # Arquivos de dependências do Node.js
 package-lock.json
-package.json
-
-# Diretórios do Maven
-.mvn/
-target/
-
-# Arquivos do Maven Wrapper
-mvnw
-mvnw.cmd
 
 # Arquivos de configuração do IDE
 .vscode/
-
-# Arquivos e diretórios de documentação e ajuda
-README.md
 
 # Outros arquivos
 *.log
