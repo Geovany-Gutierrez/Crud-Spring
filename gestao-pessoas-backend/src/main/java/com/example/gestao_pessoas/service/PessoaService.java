@@ -2,6 +2,7 @@ package com.example.gestao_pessoas.service;
 
 import com.example.gestao_pessoas.exception.CpfInvalidoException;
 import com.example.gestao_pessoas.exception.CpfJaExisteException;
+import com.example.gestao_pessoas.exception.PessoaNaoEncontradaException;
 import com.example.gestao_pessoas.model.Pessoa;
 import com.example.gestao_pessoas.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,46 +22,50 @@ public class PessoaService {
     }
 
     public Pessoa getPessoaById(Long id) {
-        Optional<Pessoa> pessoa = pessoaRepository.findById(id);
-        return pessoa.orElse(null);
+        return pessoaRepository.findById(id)
+                .orElseThrow(() -> new PessoaNaoEncontradaException("Pessoa com ID " + id + " não encontrada"));
     }
 
     public Pessoa createPessoa(Pessoa pessoa) {
-    pessoa.setCpf(formatCpf(pessoa.getCpf()));
-    validatePessoa(pessoa);
+        pessoa.setCpf(formatCpf(pessoa.getCpf()));
+        validatePessoa(pessoa);
 
-    // Verificar se o CPF já existe
-    if (pessoaRepository.existsByCpf(pessoa.getCpf())) {
-        throw new CpfJaExisteException("Já existe alguém com este CPF");
+        if (pessoaRepository.existsByCpf(pessoa.getCpf())) {
+            throw new CpfJaExisteException("Já existe alguém com este CPF");
+        }
+
+        return pessoaRepository.save(pessoa);
     }
-
-    return pessoaRepository.save(pessoa);
-    }
-
 
     public Pessoa updatePessoa(Long id, Pessoa pessoa) {
+        if (!pessoaRepository.existsById(id)) {
+            throw new PessoaNaoEncontradaException("Pessoa com ID " + id + " não encontrada");
+        }
+
         pessoa.setId(id);
         String formattedCpf = formatCpf(pessoa.getCpf());
         pessoa.setCpf(formattedCpf);
         validatePessoa(pessoa);
-    
-        // Verificar se o CPF já existe para outra pessoa
+
         Optional<Pessoa> existingPessoa = pessoaRepository.findByCpf(formattedCpf);
         if (existingPessoa.isPresent() && !existingPessoa.get().getId().equals(id)) {
             throw new CpfJaExisteException("Já existe alguém com este CPF");
         }
-    
+
         return pessoaRepository.save(pessoa);
     }
-    
 
-    public void deletePessoa(Long id) {
+    public boolean deletePessoa(Long id) {
+        if (!pessoaRepository.existsById(id)) {
+            throw new PessoaNaoEncontradaException("Pessoa com ID " + id + " não encontrada");
+        }
+
         pessoaRepository.deleteById(id);
+        return true;
     }
 
     private String formatCpf(String cpf) {
-        if (cpf == null) return null;
-        return cpf.replaceAll("\\D", "");
+        return cpf != null ? cpf.replaceAll("\\D", "") : null;
     }
 
     private void validatePessoa(Pessoa pessoa) {
@@ -70,7 +75,23 @@ public class PessoaService {
     }
 
     private boolean isValidCpf(String cpf) {
-        // Implementar a lógica de validação de CPF aqui
-        return cpf.length() == 11; 
+        if (cpf == null || cpf.length() != 11 || cpf.chars().allMatch(Character::isDigit)) {
+            return false;
+        }
+
+        int[] digits = cpf.chars().map(c -> c - '0').toArray();
+        int firstDigit = calculateCheckDigit(digits, 10);
+        int secondDigit = calculateCheckDigit(digits, 11);
+
+        return digits[9] == firstDigit && digits[10] == secondDigit;
+    }
+
+    private int calculateCheckDigit(int[] digits, int weight) {
+        int sum = 0;
+        for (int i = 0; i < weight - 1; i++) {
+            sum += digits[i] * (weight - i);
+        }
+        int remainder = sum % 11;
+        return remainder < 2 ? 0 : 11 - remainder;
     }
 }

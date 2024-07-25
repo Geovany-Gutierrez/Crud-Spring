@@ -1,5 +1,6 @@
 package com.example.gestao_pessoas.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,7 @@ public class Pessoa {
 
     @Column(name = "data_nascimento", nullable = false)
     @PastOrPresent(message = "Data de nascimento não pode ser maior que a data atual")
+    @JsonFormat(pattern = "yyyy-MM-dd") 
     private LocalDate dataNascimento;
 
     @Column(nullable = false, length = 100)

@@ -1,9 +1,6 @@
 # Diretórios do Node.js
 node_modules/
 
-# Arquivos de dependências do Node.js
-package-lock.json
-
 # Arquivos de configuração do IDE
 .vscode/
 
@@ -11,10 +8,6 @@ package-lock.json
 *.log
 *.tmp
 *.bak
-
-# Diretórios de testes
-test/
-src/test/
 
 # Arquivos gerados
 *.class

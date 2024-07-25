@@ -1,16 +1,15 @@
 package com.example.gestao_pessoas.exception;
 
-public class CpfInvalidoException extends RuntimeException {
-
+public class EmailJaExisteException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private final String errorCode;
 
-    public CpfInvalidoException(String message) {
+    public EmailJaExisteException(String message) {
         super(message);
-        this.errorCode = "CPF_INVALIDO";
+        this.errorCode = "EMAIL_JA_EXISTE";
     }
 
-    public CpfInvalidoException(String message, String errorCode) {
+    public EmailJaExisteException(String message, String errorCode) {
         super(message);
         this.errorCode = errorCode;
     }

@@ -22,7 +22,7 @@ A API permite realizar as seguintes operações de CRUD para o gerenciamento de 
 - **Atualização** dos dados de uma pessoa
 - **Exclusão** de uma pessoa
 
-A API também inclui validação de CPF e regras de negócio.
+A API também inclui validação de CPF e regras de negócio. A documentação da API é fornecida pelo [Swagger](#swagger), que oferece uma interface interativa para explorar e testar os endpoints da API.
 
 ### Interface Web
 
@@ -33,6 +33,10 @@ A aplicação frontend em React oferece uma interface para:
 - **Adicionar** uma nova pessoa
 - **Atualizar** informações de uma pessoa
 - **Excluir** uma pessoa
+
+Abaixo está um exemplo da interface do frontend:
+
+![Imagem da Interface React](image-1.png)
 
 ### Estrutura do Projeto
 
@@ -93,7 +97,7 @@ A aplicação frontend em React oferece uma interface para:
     ./mvnw spring-boot:run
     ```
 
-5. A API estará disponível em `http://localhost:8080/api/pessoas`.
+5. A API estará disponível em `http://localhost:8080/api/pessoas`. A documentação da API pode ser acessada em `http://localhost:8080/swagger-ui.html`.
 
 ### Frontend
 
@@ -117,4 +121,10 @@ A aplicação frontend em React oferece uma interface para:
 
 4. A interface estará disponível em `http://localhost:3000`.
 
-# Infelizmente não poderei melhorar este projeto em estado deplorável.
+## Swagger
+
+O projeto utiliza o Swagger para documentar e testar a API. O Swagger fornece uma interface gráfica onde você pode explorar todos os endpoints da API e realizar testes diretamente do navegador.
+
+- **Acesse o Swagger** em `http://localhost:8080/swagger-ui.html` após iniciar o backend.
+  
+![Imagem do Swagger](image.png)
