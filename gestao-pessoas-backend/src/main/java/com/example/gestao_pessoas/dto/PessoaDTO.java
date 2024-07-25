@@ -2,60 +2,47 @@ package com.example.gestao_pessoas.dto;
 
 import com.example.gestao_pessoas.model.Pessoa;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
+@Getter
+@Setter
 public class PessoaDTO {
 
+    @Schema(description = "ID da pessoa", example = "1", required = false, hidden = true)
     private Long id;
+
+    @NotBlank(message = "Nome não pode estar vazio")
+    @Size(max = 100, message = "Nome não pode ter mais que 100 caracteres")
+    @Schema(description = "Nome completo da pessoa", example = "Geovany", required = true)
     private String nome;
+
+    @NotBlank(message = "CPF é obrigatório")
+    @Pattern(regexp = "\\d{11}", message = "CPF deve conter exatamente 11 dígitos")
+    @Schema(description = "CPF da pessoa", example = "12345678901", required = true)
     private String cpf;
 
-    @JsonFormat(pattern = "yyyy-MM-dd") 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Schema(description = "Data de nascimento da pessoa", example = "1990-01-01", required = true)
     private LocalDate dataNascimento;
+
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email inválido")
+    @Schema(description = "Email da pessoa", example = "guti@gmail.com", required = true)
     private String email;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    // conversao
     public static PessoaDTO fromEntity(Pessoa pessoa) {
+        if (pessoa == null) {
+            return null;
+        }
+        
         PessoaDTO dto = new PessoaDTO();
         dto.setId(pessoa.getId());
         dto.setNome(pessoa.getNome());

@@ -1,19 +1,16 @@
 package com.example.gestao_pessoas.exception;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ErrorResponse {
-    private String errorCode;
+
+    private int status;
     private String message;
-
-    public ErrorResponse(String errorCode, String message) {
-        this.errorCode = errorCode;
-        this.message = message;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

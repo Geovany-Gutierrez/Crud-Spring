@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import FormModal from './FormModal';
 
-const EditModal = ({ showModal, onClose, pessoaToEdit, fetchPessoas }) => {
+const EditModal = ({ showModal, pessoaToEdit, fetchPessoas, onClose }) => {
     const handleSubmit = async (formData) => {
         try {
             await axios.put(`http://localhost:8080/api/pessoas/${formData.id}`, {
@@ -10,18 +10,18 @@ const EditModal = ({ showModal, onClose, pessoaToEdit, fetchPessoas }) => {
                 cpf: formData.cpf.replace(/\D/g, '') 
             });
             await fetchPessoas();
-            onClose(); 
+            onClose();
         } catch (error) {
-            console.error('Error updating pessoa', error);
+            console.error('Erro atualizando pessoa', error);
         }
     };
 
     return (
         <FormModal
             showModal={showModal}
-            onClose={onClose}
             initialData={pessoaToEdit}
             onSubmit={handleSubmit}
+            onClose={onClose} 
             title="Editar Pessoa"
         />
     );

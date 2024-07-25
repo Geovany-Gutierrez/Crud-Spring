@@ -1,5 +1,15 @@
 import React from 'react';
 
+const formatCPF = (value) => {
+    if (!value) return '';
+    const cleaned = value.replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{3})(\d{2})$/);
+    if (match) {
+        return `${match[1]}.${match[2]}.${match[3]}-${match[4]}`;
+    }
+    return cleaned;
+};
+
 const PessoaDetails = ({ pessoa, onClose }) => {
     if (!pessoa) return null;
 
@@ -23,15 +33,6 @@ const PessoaDetails = ({ pessoa, onClose }) => {
             </div>
         </div>
     );
-};
-
-const formatCPF = (value) => {
-    if (!value) return '';
-    value = value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    return value;
 };
 
 export default PessoaDetails;

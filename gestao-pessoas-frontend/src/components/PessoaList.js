@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EditModal from './EditModal';
+import FormModal from './FormModal'; 
 
 const formatCPF = (value) => {
     if (!value) return '';
-    value = value.replace(/\D/g, '');
-
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    return value;
+    const cleaned = value.replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{3})(\d{2})$/);
+    if (match) {
+        return `${match[1]}.${match[2]}.${match[3]}-${match[4]}`;
+    }
+    return cleaned;
 };
 
 const PessoaList = ({ setSelectedPessoa }) => {
@@ -17,7 +18,21 @@ const PessoaList = ({ setSelectedPessoa }) => {
     const [filteredPessoas, setFilteredPessoas] = useState([]);
     const [showEditModal, setShowEditModal] = useState(false);
     const [pessoaToEdit, setPessoaToEdit] = useState(null);
+    const [showFormModal, setShowFormModal] = useState(false); 
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const fetchPessoas = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('http://localhost:8080/api/pessoas');
+            setPessoas(response.data);
+        } catch (error) {
+            console.error('Erro ao buscar pessoas', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         fetchPessoas();
@@ -25,24 +40,23 @@ const PessoaList = ({ setSelectedPessoa }) => {
 
     useEffect(() => {
         setFilteredPessoas(
-            pessoas.filter((pessoa) =>
+            pessoas.filter(pessoa =>
                 pessoa.nome.toLowerCase().includes(searchTerm.toLowerCase())
             )
         );
     }, [searchTerm, pessoas]);
 
-    const fetchPessoas = async () => {
+    const handleEdit = async (pessoa) => {
+        setLoading(true);
         try {
-            const response = await axios.get('http://localhost:8080/api/pessoas');
-            setPessoas(response.data);
+            const response = await axios.get(`http://localhost:8080/api/pessoas/${pessoa.id}`);
+            setPessoaToEdit(response.data);
+            setShowEditModal(true);
         } catch (error) {
-            console.error('Error fetching pessoas', error);
+            console.error('Erro ao buscar detalhes da pessoa', error);
+        } finally {
+            setLoading(false);
         }
-    };
-
-    const handleEdit = (pessoa) => {
-        setPessoaToEdit(pessoa);
-        setShowEditModal(true);
     };
 
     const handleDelete = async (id) => {
@@ -50,10 +64,28 @@ const PessoaList = ({ setSelectedPessoa }) => {
             try {
                 await axios.delete(`http://localhost:8080/api/pessoas/${id}`);
                 fetchPessoas();
-                setSelectedPessoa(null); 
+                setSelectedPessoa(null);
             } catch (error) {
-                console.error('Error deleting pessoa', error);
+                console.error('Erro ao excluir pessoa', error);
             }
+        }
+    };
+
+    const handleCreate = () => {
+        setShowFormModal(true);
+    };
+
+    const handleCloseFormModal = () => {
+        setShowFormModal(false);
+    };
+
+    const handleFormSubmit = async (data) => {
+        try {
+            await axios.post('http://localhost:8080/api/pessoas', data);
+            fetchPessoas();
+            handleCloseFormModal();
+        } catch (error) {
+            console.error('Erro ao criar pessoa', error);
         }
     };
 
@@ -71,7 +103,17 @@ const PessoaList = ({ setSelectedPessoa }) => {
                 />
             </div>
 
-            {filteredPessoas.length === 0 ? (
+            <button className="btn btn-primary mb-3" onClick={handleCreate}>Adicionar Pessoa</button>
+
+            {loading && (
+                <div className="d-flex justify-content-center my-3">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="sr-only">Carregando...</span>
+                    </div>
+                </div>
+            )}
+
+            {filteredPessoas.length === 0 && !loading ? (
                 <div className="alert alert-info" role="alert">
                     Não há dados disponíveis.
                 </div>
@@ -94,9 +136,22 @@ const PessoaList = ({ setSelectedPessoa }) => {
             {pessoaToEdit && (
                 <EditModal
                     showModal={showEditModal}
-                    onClose={() => setShowEditModal(false)}
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setPessoaToEdit(null);
+                    }}
                     pessoaToEdit={pessoaToEdit}
                     fetchPessoas={fetchPessoas}
+                />
+            )}
+
+            {showFormModal && (
+                <FormModal
+                    showModal={showFormModal}
+                    onClose={handleCloseFormModal}
+                    initialData={{}}
+                    onSubmit={handleFormSubmit}
+                    title="Adicionar Pessoa"
                 />
             )}
         </div>

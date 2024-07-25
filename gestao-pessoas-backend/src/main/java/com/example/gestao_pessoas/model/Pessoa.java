@@ -1,18 +1,20 @@
 package com.example.gestao_pessoas.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
+
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "pessoa")
+@Getter
+@Setter
 public class Pessoa {
 
     @Id
@@ -20,62 +22,22 @@ public class Pessoa {
     private Long id;
 
     @Column(nullable = false, length = 100)
-    @NotEmpty(message = "Nome não pode estar vazio")
-    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Nome deve conter apenas letras e espaços")
+    @NotBlank(message = "Nome não pode estar vazio")
+    @Size(min = 1, max = 100, message = "Nome deve ter entre 1 e 100 caracteres")
     private String nome;
 
     @Column(nullable = false, unique = true, length = 11)
-    @NotEmpty(message = "CPF é obrigatório")
-    @Pattern(regexp = "^\\d{11}$", message = "CPF deve conter apenas 11 dígitos")
+    @NotBlank(message = "CPF é obrigatório")
+    @Size(min = 11, max = 11, message = "CPF deve conter exatamente 11 dígitos")
     private String cpf;
 
     @Column(name = "data_nascimento", nullable = false)
     @PastOrPresent(message = "Data de nascimento não pode ser maior que a data atual")
-    @JsonFormat(pattern = "yyyy-MM-dd") 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
     @Column(nullable = false, length = 100)
+    @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email inválido")
     private String email;
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf != null ? cpf.replaceAll("\\D", "") : null;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
